@@ -3,12 +3,13 @@ import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import {
   Bell,
-  ChevronRight,
+  CheckCircle2,
   Compass,
+  LayoutGrid,
   Leaf,
+  List,
   QrCode,
   Search,
-  SlidersHorizontal,
   Star
 } from 'lucide-react-native';
 import React, { useState } from 'react';
@@ -44,12 +45,20 @@ const TRENDING_PRODUCTS = [
 ];
 
 const RECENT_SCANS = [
-  { id: 's1', name: 'Organic Cotton T-Shirt', date: '20/03/2024', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCPQRJTcQhpg_0vW0vgBgSNn72h26aoRIHqgakL-aXQpmZ5igBK_ZhS7yRwjxLXt11JK8vvZ4CYynoyHi3ivzKA02ANU6vSGOd_XNeslUOmunksZRqBPQQN3sfw0JT4NJEtUSnf2HWRuInkVcpOmZiZ23O8YANAfRqLUf7i6fHO5B-lqLOeEcaHJpJqJvSHSDFtJtN2w_WZPORp4ixCzbz27x3cPka7oOQvEPRQinFUoKOMYzNIVIC9yaN19usvADwrCS3IdVtgXn0' },
-  { id: 's2', name: 'Green Coffee Beans', date: '19/03/2024', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDIegH_DUudUVTC4xPJaCkQSW0O6ZDCJfj1GmBa7nl3JASqTlcxh7WBLezu_VQFtIZvlbfIDNSOqXeOKqMnjJomU-B2ys1ZJud0o2BKGvCSd5LJqXdtWbp_Gf3j_Fte1K4-t4S3dSaONuz4VLQk9req_Vrn0X1fFLbf2pf-W8QPJCrSrQVmw2jk4DsZ7a2XiVttwyeXuFRTWqgiArDf3PAYLRfw8Vehjzuyqa_brKLlpcWl5Qb_qtZnUqDExs5ssf87YYGmChC5_A4' },
+  { id: 'scan-1', name: 'Áo thun Organic Cotton', brand: 'EcoWear', rating: '4.8/5', date: '10:30, 15/10/2023', verified: true, image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCPQRJTcQhpg_0vW0vgBgSNn72h26aoRIHqgakL-aXQpmZ5igBK_ZhS7yRwjxLXt11JK8vvZ4CYynoyHi3ivzKA02ANU6vSGOd_XNeslUOmunksZRqBPQQN3sfw0JT4NJEtUSnf2HWRuInkVcpOmZiZ23O8YANAfRqLUf7i6fHO5B-lqLOeEcaHJpJqJvSHSDFtJtN2w_WZPORp4ixCzbz27x3cPka7oOQvEPRQinFUoKOMYzNIVIC9yaN19usvADwrCS3IdVtgXn0' },
+  { id: 'scan-2', name: 'Giày chạy bộ Recycled', brand: 'GreenSteps', rating: '4.5/5', date: '08:15, 14/10/2023', verified: true, image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDIegH_DUudUVTC4xPJaCkQSW0O6ZDCJfj1GmBa7nl3JASqTlcxh7WBLezu_VQFtIZvlbfIDNSOqXeOKqMnjJomU-B2ys1ZJud0o2BKGvCSd5LJqXdtWbp_Gf3j_Fte1K4-t4S3dSaONuz4VLQk9req_Vrn0X1fFLbf2pf-W8QPJCrSrQVmw2jk4DsZ7a2XiVttwyeXuFRTWqgiArDf3PAYLRfw8Vehjzuyqa_brKLlpcWl5Qb_qtZnUqDExs5ssf87YYGmChC5_A4' },
+  { id: 'scan-3', name: 'Ly sứ Ceramic Bamboo', brand: 'EarthCare', rating: '3.2/5', date: '09:20, 10/10/2023', verified: false, image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCPQRJTcQhpg_0vW0vgBgSNn72h26aoRIHqgakL-aXQpmZ5igBK_ZhS7yRwjxLXt11JK8vvZ4CYynoyHi3ivzKA02ANU6vSGOd_XNeslUOmunksZRqBPQQN3sfw0JT4NJEtUSnf2HWRuInkVcpOmZiZ23O8YANAfRqLUf7i6fHO5B-lqLOeEcaHJpJqJvSHSDFtJtN2w_WZPORp4ixCzbz27x3cPka7oOQvEPRQinFUoKOMYzNIVIC9yaN19usvADwrCS3IdVtgXn0' },
 ];
+
+const SCAN_FILTERS = ['Hôm nay', 'Tuần này', 'Tháng này', '4*+'];
 
 export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [scanSearchQuery, setScanSearchQuery] = useState('');
+  const [activeFilter, setActiveFilter] = useState('Hôm nay');
+  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
+  const [showSearch, setShowSearch] = useState(false);
+  const [showScanSearch, setShowScanSearch] = useState(false);
 
   const renderActionCard = (item: typeof QUICK_ACTIONS[0]) => {
     const Icon = item.icon;
@@ -82,38 +91,67 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollPadding}>
-        {/* Header */}
-        <View style={styles.header}>
-          <View>
-            <Text style={styles.greetingText}>Chào Alex 👋</Text>
-            <View style={styles.levelBadge}>
-              <Leaf size={14} color={ScaColors.primary} fill={ScaColors.primary} />
-              <Text style={styles.levelText}>Green Warrior</Text>
+      {/* Fixed Header Card */}
+      <View style={styles.headerCard}>
+        {/* Top Addon: Logo & Actions */}
+        <View style={styles.headerTopAddon}>
+          <View style={styles.headerLogoBox}>
+            <View style={styles.logoIconHeader}>
+              <Leaf color="#fff" size={16} fill="#fff" />
             </View>
+            <Text style={styles.logoTextHeader}>SCA</Text>
           </View>
-          <TouchableOpacity style={styles.notificationBtn}>
-            <Bell color="#111827" size={24} />
-            <View style={styles.notifDot} />
-          </TouchableOpacity>
-        </View>
-
-        {/* Search Bar */}
-        <View style={styles.searchContainer}>
-          <View style={styles.searchBar}>
-            <Search color="#9CA3AF" size={20} style={styles.searchIcon} />
-            <TextInput
-              placeholder="Tìm sản phẩm, thương hiệu..."
-              placeholderTextColor="#9CA3AF"
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-              style={styles.searchInput}
-            />
-            <TouchableOpacity>
-              <SlidersHorizontal color="#9CA3AF" size={20} />
+          <View style={{ flexDirection: 'row', gap: 12 }}>
+            <TouchableOpacity style={styles.notificationBtnTop} onPress={() => setShowSearch(!showSearch)}>
+              <Search color="#111827" size={20} />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.notificationBtnTop} onPress={() => router.push('/(consumer)/notifications' as any)}>
+              <Bell color="#111827" size={20} />
+              <View style={styles.notifDotActive} />
             </TouchableOpacity>
           </View>
         </View>
+
+        {/* User Info Row */}
+        <View style={styles.headerTopRow}>
+          <View style={styles.headerLeftInfo}>
+            <View style={styles.avatarCircle}>
+              <Image source={{ uri: 'https://i.pravatar.cc/150?img=11' }} style={{ width: '100%', height: '100%', borderRadius: 24 }} contentFit="cover" />
+            </View>
+            <View>
+              <Text style={styles.greetingSubText}>Xin chào,</Text>
+              <Text style={styles.greetingNameText}>Alex!</Text>
+            </View>
+          </View>
+
+          <View style={styles.headerRightInfo}>
+            <View style={styles.levelBadgeOutline}>
+              <Text style={styles.levelTextOutline}>GREEN WARRIOR</Text>
+            </View>
+            <View style={styles.pointsRow}>
+              <Leaf size={12} color={ScaColors.primary} fill={ScaColors.primary} />
+              <Text style={styles.pointsText}>2,450 pts</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Search Bar inside Header (Toggleable) */}
+        {showSearch && (
+          <View style={styles.searchBarWrapper}>
+            <Search color="#9CA3AF" size={20} style={{ marginLeft: 16, marginRight: 8 }} />
+            <TextInput
+              placeholder="Tìm kiếm sản phẩm hoặc thương hiệu."
+              placeholderTextColor="#9CA3AF"
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              style={styles.searchInputUnified}
+              autoFocus
+            />
+          </View>
+        )}
+      </View>
+
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollPadding}>
 
         {/* Quick Actions */}
         <View style={styles.sectionContainer}>
@@ -177,20 +215,96 @@ export default function HomeScreen() {
 
         {/* Recent Scans */}
         <View style={[styles.sectionContainer, { marginBottom: 40 }]}>
-          <Text style={styles.sectionTitle}>Lần quét gần đây</Text>
-          <View style={styles.recentList}>
+          <View style={styles.sectionHeaderRow}>
+            <Text style={styles.sectionTitle}>Lần quét gần đây</Text>
+            <View style={{ flexDirection: 'row', gap: 8 }}>
+              <TouchableOpacity onPress={() => setShowScanSearch(!showScanSearch)} style={styles.viewToggleBtn}>
+                <Search size={20} color="#6B7280" />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setViewMode(viewMode === 'list' ? 'grid' : 'list')} style={styles.viewToggleBtn}>
+                {viewMode === 'list' ? <LayoutGrid size={20} color="#6B7280" /> : <List size={20} color="#6B7280" />}
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Internal Search for Scans (Toggleable) */}
+          {showScanSearch && (
+            <View style={styles.scanSearchWrapper}>
+              <Search color="#9CA3AF" size={18} style={{ marginLeft: 16, marginRight: 8 }} />
+              <TextInput
+                placeholder="Tìm kiếm sản phẩm đã quét..."
+                placeholderTextColor="#9CA3AF"
+                value={scanSearchQuery}
+                onChangeText={setScanSearchQuery}
+                style={styles.scanSearchInput}
+                autoFocus
+              />
+            </View>
+          )}
+
+          {/* Filter Pills */}
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterPillsScroll}>
+            {SCAN_FILTERS.map((filter, index) => (
+              <TouchableOpacity
+                key={index}
+                style={[styles.filterPill, activeFilter === filter && styles.filterPillActive]}
+                onPress={() => setActiveFilter(filter)}
+              >
+                <Text style={[styles.filterPillText, activeFilter === filter && styles.filterPillTextActive]}>{filter}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+
+          {/* Scans List / Grid */}
+          <View style={viewMode === 'list' ? styles.recentListVertical : styles.recentGrid}>
             {RECENT_SCANS.map((item) => (
               <TouchableOpacity
                 key={item.id}
-                style={styles.recentItem}
+                style={viewMode === 'list' ? styles.scanCardList : styles.scanCardGrid}
                 onPress={() => router.push(`/product/${item.id}` as any)}
               >
-                <Image source={{ uri: item.image }} style={styles.recentThumb} contentFit="cover" />
-                <View style={styles.recentInfo}>
-                  <Text style={styles.recentName}>{item.name}</Text>
-                  <Text style={styles.recentDate}>{item.date}</Text>
+                <View style={styles.scanCardImageWrap}>
+                  <Image source={{ uri: item.image }} style={styles.scanCardImage} contentFit="cover" />
                 </View>
-                <ChevronRight color="#D1D5DB" size={20} />
+
+                {viewMode === 'list' && (
+                  <View style={styles.scanCardInfoList}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <Text style={styles.scanCardName} numberOfLines={1}>{item.name}</Text>
+                      {item.verified && (
+                        <View style={styles.checkIconTopRight}>
+                          <CheckCircle2 size={16} color="#10B981" />
+                        </View>
+                      )}
+                    </View>
+                    <Text style={styles.scanCardBrand}>{item.brand} • <Text style={{ color: ScaColors.primary }}>{item.rating}</Text></Text>
+
+                    <View style={styles.scanCardBottomList}>
+                      <Text style={styles.scanCardDate}>{item.date}</Text>
+                      {item.verified ? (
+                        <View style={styles.verifiedBadge}>
+                          <Text style={styles.verifiedBadgeText}>ĐÃ XÁC MINH</Text>
+                        </View>
+                      ) : (
+                        <View style={styles.unverifiedBadge}>
+                          <Text style={styles.unverifiedBadgeText}>CHƯA XÁC MINH</Text>
+                        </View>
+                      )}
+                    </View>
+                  </View>
+                )}
+
+                {viewMode === 'grid' && (
+                  <View style={styles.scanCardInfoGrid}>
+                    <Text style={styles.scanCardName} numberOfLines={2}>{item.name}</Text>
+                    <Text style={styles.scanCardBrand}>{item.brand}</Text>
+                    {item.verified && (
+                      <View style={[styles.verifiedBadge, { alignSelf: 'flex-start', marginTop: 4 }]}>
+                        <Text style={styles.verifiedBadgeText}>ĐÃ XÁC MINH</Text>
+                      </View>
+                    )}
+                  </View>
+                )}
               </TouchableOpacity>
             ))}
           </View>
@@ -203,63 +317,141 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB', // Gray 50
+    backgroundColor: '#F3F4F6', // Blue-ish gray background behind the card
   },
-  scrollPadding: {
-    paddingBottom: 100, // Increased to clear 80px tab bar
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight || 0) + 10 : 20,
-    marginBottom: 24,
-    // marginTop: 50,
-  },
-  greetingText: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: '#111827', // Gray 900
-  },
-  levelBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  headerCard: {
     backgroundColor: '#fff',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
-    marginTop: 8,
-    alignSelf: 'flex-start',
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
+    paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight || 0) + 10 : 20,
+    paddingBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 12,
+    elevation: 4,
+    zIndex: 10,
+  },
+  headerTopRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+  headerTopAddon: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    marginBottom: 16,
+  },
+  headerLogoBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 6,
   },
-  levelText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: ScaColors.primary,
-  },
-  notificationBtn: {
-    width: 44,
-    height: 44,
-    backgroundColor: '#fff',
-    borderRadius: 22,
+  logoIconHeader: {
+    width: 28,
+    height: 28,
+    backgroundColor: ScaColors.primary,
+    borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
   },
-  notifDot: {
+  logoTextHeader: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#1E3A8A', // Dark blue text
+  },
+  notificationBtnTop: {
+    width: 36,
+    height: 36,
+    backgroundColor: '#F3F4F6',
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headerLeftInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  avatarCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    borderWidth: 2,
+    borderColor: '#A7F3D0', // light green border
+  },
+  greetingSubText: {
+    fontSize: 13,
+    color: '#6B7280',
+    marginBottom: 2,
+  },
+  greetingNameText: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  notifDotActive: {
     position: 'absolute',
-    top: 12,
-    right: 12,
+    top: 8,
+    right: 8,
     width: 8,
     height: 8,
     backgroundColor: '#EF4444',
     borderRadius: 4,
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: '#fff',
+  },
+  headerRightInfo: {
+    alignItems: 'flex-end',
+  },
+  levelBadgeOutline: {
+    backgroundColor: '#ECFDF5',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#D1FAE5',
+    marginBottom: 4,
+  },
+  levelTextOutline: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: ScaColors.primary,
+    letterSpacing: 0.5,
+  },
+  pointsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  pointsText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: ScaColors.primary,
+  },
+  searchBarWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 20,
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    height: 54,
+  },
+  searchInputUnified: {
+    flex: 1,
+    fontSize: 15,
+    color: '#111827',
+    height: '100%',
+  },
+  scrollPadding: {
+    paddingTop: 24,
+    paddingBottom: 120, // Increased to clear 80px tab bar + fab
   },
   searchContainer: {
     paddingHorizontal: 24,
@@ -438,40 +630,155 @@ const styles = StyleSheet.create({
     color: ScaColors.primary,
     marginTop: 4,
   },
-  recentList: {
-    gap: 12,
+
+  // === Filter Tabs ===
+  filterPillsScroll: {
+    paddingBottom: 16,
+    gap: 10,
   },
-  recentItem: {
+  filterPill: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: '#F3F4F6',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+  },
+  filterPillActive: {
+    backgroundColor: ScaColors.primary,
+    borderColor: ScaColors.primary,
+  },
+  filterPillText: {
+    fontSize: 14,
+    color: '#4B5563',
+    fontWeight: '600',
+  },
+  filterPillTextActive: {
+    color: '#fff',
+  },
+
+  viewToggleBtn: {
+    padding: 8,
+    backgroundColor: '#F3F4F6',
+    borderRadius: 8,
+  },
+
+  scanSearchWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: '#F9FAFB',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    height: 46,
+    marginBottom: 16,
+  },
+  scanSearchInput: {
+    flex: 1,
+    fontSize: 14,
+    color: '#111827',
+    height: '100%',
+  },
+
+  // === Recent Scans New Layout ===
+  recentListVertical: {
+    gap: 12,
+  },
+  recentGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  scanCardList: {
+    flexDirection: 'row',
     backgroundColor: '#fff',
     borderRadius: 12,
     padding: 12,
     borderWidth: 1,
-    borderColor: '#F3F4F6',
+    borderColor: '#E5E7EB',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
+    shadowOpacity: 0.03,
+    shadowRadius: 6,
     elevation: 2,
   },
-  recentThumb: {
-    width: 48,
-    height: 48,
-    borderRadius: 8,
+  scanCardGrid: {
+    width: '48%',
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.03,
+    shadowRadius: 6,
+    elevation: 2,
   },
-  recentInfo: {
+  scanCardImageWrap: {
+    width: 64,
+    height: 64,
+    borderRadius: 10,
+    backgroundColor: '#F3F4F6',
+    marginRight: 12,
+    overflow: 'hidden',
+  },
+  scanCardImage: {
+    width: '100%',
+    height: '100%',
+  },
+  scanCardInfoList: {
     flex: 1,
-    marginLeft: 12,
+    justifyContent: 'center',
   },
-  recentName: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#374151',
+  scanCardInfoGrid: {
+    marginTop: 12,
+    alignItems: 'center',
   },
-  recentDate: {
+  scanCardName: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#1F2937',
+    marginBottom: 4,
+    flex: 1,
+  },
+  checkIconTopRight: {
+    marginLeft: 8,
+  },
+  scanCardBrand: {
+    fontSize: 13,
+    color: '#6B7280',
+    marginBottom: 8,
+  },
+  scanCardBottomList: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  scanCardDate: {
     fontSize: 12,
     color: '#9CA3AF',
-    marginTop: 2,
+  },
+  verifiedBadge: {
+    backgroundColor: '#ECFDF5',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  verifiedBadgeText: {
+    color: '#10B981',
+    fontSize: 10,
+    fontWeight: '800',
+  },
+  unverifiedBadge: {
+    backgroundColor: '#F3F4F6',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  unverifiedBadgeText: {
+    color: '#9CA3AF',
+    fontSize: 10,
+    fontWeight: '800',
   },
 });

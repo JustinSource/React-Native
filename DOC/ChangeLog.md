@@ -2,6 +2,31 @@
 
 Tất cả các thay đổi quan trọng đối với dự án SCA sẽ được ghi lại trong tệp này.
 
+## [1.1.3] - 2026-03-04 (Home Dashboard Redesign)
+
+### Added
+- Thêm Logo `SCA` dạng nổi bật (Green Leaf & Blue Text) vào góc trên cùng bên trái của Fixed Header Card trong Home screen (`app/(tabs)/index.tsx`) để tăng nhận diện thương hiệu.
+- Bổ sung tùy chọn Grid / List Toggle View cho phần "Lần quét gần đây" sử dụng Lucide Icons.
+- Tối ưu không gian bằng cách thêm icon Search (Tìm kiếm) cạnh mục Thông báo (Header) và cạnh View Toggle (Lần quét gần đây) để ẩn/hiện thanh tìm kiếm khi người dùng tương tác.
+- Hệ thống Filter Pills (Lọc theo Hôm nay, Tuần này, Tháng này, 4*+) cho lịch sử quét.
+
+### Changed
+- Cập nhật giao diện Render List của "Lần quét gần đây" sang layout dạng Card mới (có viền xám nhẹ, nền trắng), hiển thị chi tiết Brand, Rating và Badge trạng thái "ĐÃ XÁC MINH"/"CHƯA XÁC MINH" đồng thời hỗ trợ kiểu dáng cho cả List View và Grid View.
+
+---
+
+## [1.1.2] - 2026-03-03 (UI & Flow Refinement)
+### Added
+- **Notifications Screen:** Trang thông báo mới (`app/(consumer)/notifications.tsx`) hiển thị danh sách thông báo phân loại theo thời gian (Today & Earlier) với UI hiện đại có trạng thái Read/Unread.
+- **Home Header:** Thiết kế Fixed Header Card mới trên màn hình Home (index) chứa người dùng, cấp độ (Green Warrior), điểm thưởng, nút thông báo và thanh tìm kiếm, giữ lại logo và avatar rõ ràng.
+
+### Changed
+- **Review Modal:** Nâng cấp kiểu dáng thanh trượt (slider) trong `ProductPassportScreen` thành dạng custom thumb màu Primary (Xanh ngọc) bắt mắt kèm track tuỳ chỉnh. Cập nhật góc bo tròn, margin và kích thước chữ tiêu đề để tăng trải nghiệm người dùng.
+- **Consumer Flow:** Bỏ nút "Buy Now" do mục đích là quét sản phẩm đã mua để tích điểm, thay vào đó hiển thị thông tin nơi đã mua và thời gian tính bền vững. Flow hiện tại: Consumer Scan -> Check thông tin bền vững -> Nhấn "Verified Purchase" xác nhận tại cửa hàng đã mua -> Ghi nhận địa điểm / thời gian mua -> Viết Đánh giá (Review) tham gia bảo vệ môi trường để nhận points.
+- Header Home screen được chuyển thành dạng `fixed-top` tích hợp luôn thanh Search và Avatar thay vì hiển thị dạng cuộn.
+
+---
+
 ## [1.1.1] - 2026-03-03 (Hotfix)
 
 ### Fixed

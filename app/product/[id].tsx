@@ -17,7 +17,8 @@ import {
     ShieldCheck,
     Star,
     Truck,
-    Wind
+    Wind,
+    X
 } from 'lucide-react-native';
 import React, { useState } from 'react';
 import {
@@ -141,7 +142,7 @@ const ReviewModal = ({ visible, onClose }: { visible: boolean; onClose: () => vo
                     <View style={styles.modalHeader}>
                         <Text style={styles.modalTitle}>Đánh giá & Nhận xét</Text>
                         <TouchableOpacity onPress={onClose} style={styles.modalClose}>
-                            <Text style={styles.modalCloseText}>✕</Text>
+                            <X size={20} color="#64748B" />
                         </TouchableOpacity>
                     </View>
                     <ScrollView showsVerticalScrollIndicator={false}>
@@ -156,15 +157,16 @@ const ReviewModal = ({ visible, onClose }: { visible: boolean; onClose: () => vo
                                         </View>
                                         <Text style={styles.criterionScore}>{val}/5</Text>
                                     </View>
-                                    <View style={styles.sliderTrack}>
-                                        <View style={[styles.sliderFill, { width: `${(val / 5) * 100}%` as any }]} />
-                                    </View>
-                                    <View style={styles.sliderTicks}>
-                                        {[1, 2, 3, 4, 5].map(n => (
-                                            <TouchableOpacity key={n} style={styles.sliderTickBtn} onPress={() => setRatings(r => ({ ...r, [crit.key]: n }))}>
-                                                <Text style={{ fontSize: 11, color: val >= n ? ScaColors.primary : '#E5E7EB', fontWeight: '700' }}>{n}</Text>
-                                            </TouchableOpacity>
-                                        ))}
+                                    <View style={styles.sliderWrapper}>
+                                        <View style={styles.sliderTrack}>
+                                            <View style={[styles.sliderFill, { width: `${(val / 5) * 100}%` as any }]} />
+                                            <View style={[styles.sliderThumb, { left: `${(val / 5) * 100}%` as any }]} />
+                                        </View>
+                                        <View style={styles.sliderInvisibleTouchArea}>
+                                            {[1, 2, 3, 4, 5].map(n => (
+                                                <TouchableOpacity key={n} style={{ flex: 1, height: '100%' }} onPress={() => setRatings(r => ({ ...r, [crit.key]: n }))} />
+                                            ))}
+                                        </View>
                                     </View>
                                 </View>
                             );
@@ -560,25 +562,26 @@ const styles = StyleSheet.create({
     certFooterTitle: { fontSize: 14, fontWeight: '700', color: '#92400E', marginBottom: 2 },
     certFooterDesc: { fontSize: 13, color: '#78350F', lineHeight: 18 },
     modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
-    modalContainer: { backgroundColor: '#fff', borderTopLeftRadius: 28, borderTopRightRadius: 28, paddingHorizontal: 24, paddingTop: 12, maxHeight: '90%' },
-    modalHandle: { width: 40, height: 4, backgroundColor: '#E5E7EB', borderRadius: 2, alignSelf: 'center', marginBottom: 16 },
-    modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 },
-    modalTitle: { fontSize: 20, fontWeight: '800', color: '#111827' },
-    modalClose: { width: 30, height: 30, borderRadius: 15, backgroundColor: '#F3F4F6', justifyContent: 'center', alignItems: 'center' },
-    modalCloseText: { fontSize: 14, color: '#6B7280', fontWeight: '700' },
-    criterionRow: { marginBottom: 20 },
-    criterionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 },
-    criterionLabel: { fontSize: 16, fontWeight: '700', color: '#111827' },
-    criterionDesc: { fontSize: 12, color: '#6B7280', marginTop: 2 },
-    criterionScore: { fontSize: 18, fontWeight: '800', color: ScaColors.primary },
-    sliderTrack: { height: 6, backgroundColor: '#E5E7EB', borderRadius: 3, overflow: 'hidden' },
-    sliderFill: { height: '100%', backgroundColor: ScaColors.primary, borderRadius: 3 },
-    sliderTicks: { flexDirection: 'row', justifyContent: 'space-around', marginTop: 8 },
-    sliderTickBtn: { paddingHorizontal: 8, paddingVertical: 4 },
-    commentSection: { marginTop: 4, marginBottom: 20 },
-    commentLabel: { fontSize: 16, fontWeight: '700', color: '#111827', marginBottom: 12 },
-    commentInput: { backgroundColor: '#F9FAFB', borderRadius: 14, padding: 14, fontSize: 14, color: '#374151', minHeight: 100, borderWidth: 1, borderColor: '#E5E7EB' },
-    submitBtn: { backgroundColor: ScaColors.primary, paddingVertical: 18, borderRadius: 14, alignItems: 'center', shadowColor: ScaColors.primary, shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.25, shadowRadius: 16, elevation: 6 },
-    submitBtnText: { color: '#fff', fontSize: 17, fontWeight: '700' },
+    modalContainer: { backgroundColor: '#fff', borderTopLeftRadius: 32, borderTopRightRadius: 32, paddingHorizontal: 24, paddingTop: 12, paddingBottom: 24, maxHeight: '90%' },
+    modalHandle: { width: 48, height: 6, backgroundColor: '#E2E8F0', borderRadius: 3, alignSelf: 'center', marginBottom: 20 },
+    modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 },
+    modalTitle: { fontSize: 24, fontWeight: '700', color: '#0F172A' },
+    modalClose: { width: 36, height: 36, borderRadius: 18, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' },
+    criterionRow: { marginBottom: 24 },
+    criterionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 12 },
+    criterionLabel: { fontSize: 16, fontWeight: '600', color: '#0F172A' },
+    criterionDesc: { fontSize: 14, color: '#64748B', marginTop: 2 },
+    criterionScore: { fontSize: 16, fontWeight: '700', color: ScaColors.primary },
+    sliderWrapper: { position: 'relative', height: 24, justifyContent: 'center' },
+    sliderTrack: { height: 8, backgroundColor: ScaColors.primary + '1A', borderRadius: 4, width: '100%', position: 'relative' },
+    sliderFill: { position: 'absolute', top: 0, left: 0, height: '100%', backgroundColor: ScaColors.primary, borderRadius: 4 },
+    sliderThumb: { position: 'absolute', top: '50%', width: 20, height: 20, borderRadius: 10, backgroundColor: '#fff', borderWidth: 2, borderColor: ScaColors.primary, transform: [{ translateY: -10 }, { translateX: -10 }], shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 3, elevation: 2 },
+    sliderInvisibleTouchArea: { position: 'absolute', top: -10, bottom: -10, left: 0, right: 0, flexDirection: 'row' },
+    commentSection: { marginTop: 4, marginBottom: 24 },
+    commentLabel: { fontSize: 16, fontWeight: '600', color: '#0F172A', marginBottom: 10 },
+    commentInput: { backgroundColor: '#fff', borderRadius: 12, padding: 16, fontSize: 15, color: '#334155', minHeight: 120, borderWidth: 1, borderColor: '#E2E8F0' },
+    submitBtn: { backgroundColor: ScaColors.primary, paddingVertical: 16, borderRadius: 12, alignItems: 'center', shadowColor: ScaColors.primary, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.2, shadowRadius: 8, elevation: 4 },
+    submitBtnText: { color: '#fff', fontSize: 16, fontWeight: '700' },
+
     purchaseActionBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, paddingVertical: 16, borderRadius: 14 },
 });
