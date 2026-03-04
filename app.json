@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "pulsing-interstellar",
-    "slug": "pulsing-interstellar",
+    "name": "SCA",
+    "slug": "sca",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "pulsinginterstellar",
+    "scheme": "sca",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {

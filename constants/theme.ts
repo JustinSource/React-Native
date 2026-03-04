@@ -27,6 +27,18 @@ export const Colors = {
   },
 };
 
+export const ScaColors = {
+  primary: '#10B981',     // Emerald Green (Consumer)
+  secondary: '#1E3A8A',   // Deep Blue
+  consumer: '#10B981',    // Emerald Green
+  shop: '#3B82F6',        // Blue
+  distributor: '#8B5CF6', // Purple
+  affiliate: '#F97316',   // Orange
+  brand: '#8B5CF6',       // Purple (aligned with Distributor/Authority)
+  factory: '#2980B9',     // Steel Blue
+  auditor: '#7F8C8D',     // Slate Grey
+};
+
 export const Fonts = Platform.select({
   ios: {
     /** iOS `UIFontDescriptorSystemDesignDefault` */
